@@ -20,6 +20,7 @@ class Listar extends Component {
 	remover(){
 		this.setState({
 			lista:"",
+			numero:"",
 		});
 	}
 
