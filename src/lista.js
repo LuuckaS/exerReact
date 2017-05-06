@@ -1,38 +1,59 @@
 import React, { Component } from 'react';
 import './App.css';
 
+var arrayLista = [
+];
 
 class Listar extends Component {
 	constructor(){
 		super();
 		this.state = {
 			lista: "",
-			numero: "",
+			msg: "",
+			qtdItens: arrayLista.length,
+			estado: false,
 		};
 	}
 
-	adicionar(){
+	adicionar(aux){
 		this.setState({
-			lista: document.getElementById('inform').value,
+			lista: aux.target.value,
 		});
+
+
+	}
+
+	handleSubmit(e){
+		e.preventDefault();
+		arrayLista.push({nome: this.state.lista});
+		
+		this.setState({
+			lista: "",	
+		});
+
+
 	}
 
 	remover(){
+		arrayLista.pop();
 		this.setState({
 			lista:"",
-			numero:"",
+			msg:"",
+			estado: false, 
 		});
 	}
 
 
 	finalizar(){
 
-		if( this.state.lista === ""){
+		if( arrayLista.length === 0){
 			alert("Lista vazia!");
 		}
 		else{
 			this.setState({
-				numero:1,
+				msg: "A lista tem "+arrayLista.length+" elemento(s)",
+				qtdItens: this.state.qtdItens + 1,
+				estado: true,
 			});
 		}
 		
@@ -41,21 +62,56 @@ class Listar extends Component {
 
 
   render() {
+  	const mostrarMensagem = this.state.estado ? <Mensagem itens={"A lista tem "+arrayLista.length+" elemento(s)"} /> : null;
     return (
     	<div>
-    		<ul>
-      			<li> {this.state.lista} </li>
-     	 	</ul>
+    		<form onSubmit={this.handleSubmit.bind(this)}>
+						<label>Adicione um item</label><br />
+						<input type="text" id="inform" value={this.state.lista} onChange={this.adicionar.bind(this)} />
+						<button>Adicionar</button>
+				</form>
+				<button onClick={this.remover.bind(this)}>Remover</button>
+				<button onClick={this.finalizar.bind(this)}>Finalizar</button>	
+			
+				<Linha />	
 
-			<label>Adicione um item</label><br></br>
-			<input type="text" id="inform"></input>
-			<button onClick={this.adicionar.bind(this)}>Adicionar</button>
-			<button onClick={this.remover.bind(this)}>Remover</button>
-			<button onClick={this.finalizar.bind(this)}>Finalizar</button>
-			<div><br></br>{this.state.numero}</div>	
+				{mostrarMensagem}
+					
+				
 		</div>
     );
   }
+}
+
+class Linha extends Component {
+	render() {
+    	return (
+    			<ul>
+				{arrayLista.map((teste)=>{
+					return(
+						<li> {teste.nome} </li>
+					); 
+				}
+
+				)}
+				</ul>
+			);
+	}		
+}
+
+class Mensagem extends Component {
+	constructor(){
+		super();
+			this.state = {
+				msg: "",
+		};
+	}
+	render() {
+    	return (
+				<p> {this.props.itens} </p>
+
+			);
+	}		
 }
 
 export default Listar;
